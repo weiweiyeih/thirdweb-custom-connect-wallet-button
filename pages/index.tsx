@@ -1,106 +1,76 @@
-import { ConnectWallet } from "@thirdweb-dev/react";
-import styles from "../styles/Home.module.css";
-import Image from "next/image";
+import { ConnectWallet, MediaRenderer, darkTheme, useActiveClaimCondition, useContract } from "@thirdweb-dev/react";
 import { NextPage } from "next";
 
 const Home: NextPage = () => {
+
+  const customTheme = darkTheme({
+    fontFamily: "Futura",
+    colors: {
+      modalBg: "#FFFFFF",
+      primaryText: "#333333",
+      walletSelectorButtonHoverBg: "#EEEEEE",
+      separatorLine: "#EEEEEE",
+      borderColor: "#EEEEEE"
+    }
+  })
+
+  const { contract } = useContract("0xF627A2EA6701D9aFeaEDB3dB6e356fC01c83a154");
+
+  const {
+    data: claimCondition
+  } = useActiveClaimCondition(contract, 0);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>
-            Welcome to{" "}
-            <span className={styles.gradientText0}>
-              <a
-                href="https://thirdweb.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                thirdweb.
-              </a>
-            </span>
-          </h1>
+    <main className="bg-zinc-900 h-screen flex justify-center items-center" >
+      <div >
+        <ConnectWallet
+          btnTitle="Login"
+          className="bg-zinc-900"
 
-          <p className={styles.description}>
-            Get started by configuring your desired network in{" "}
-            <code className={styles.code}>src/index.js</code>, then modify the{" "}
-            <code className={styles.code}>src/App.js</code> file!
-          </p>
+          theme={customTheme}
 
-          <div className={styles.connect}>
-            <ConnectWallet
-              dropdownPosition={{
-                side: "bottom",
-                align: "center",
-              }}
-            />
-          </div>
-        </div>
+          modalTitle="Login in with wallet"
+          modalTitleIconUrl="/metamaskIcon.png"
 
-        <div className={styles.grid}>
-          <a
-            href="https://portal.thirdweb.com/"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/portal-preview.png"
-              alt="Placeholder preview of starter"
-              width={300}
-              height={200}
-            />
-            <div className={styles.cardText}>
-              <h2 className={styles.gradientText1}>Portal ➜</h2>
-              <p>
-                Guides, references, and resources that will help you build with
-                thirdweb.
-              </p>
-            </div>
-          </a>
+          // welcomeScreen={{
+          //   title: "Connect Wallet to claim NFT.",
+          //   subtitle: "Claim your NFT now!",
+          //   img: {
+          //     src: "/white-t-shirt.jpg",
+          //     height: 150,
+          //     width: 150
+          //   }
+          // }}
 
-          <a
-            href="https://thirdweb.com/dashboard"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/dashboard-preview.png"
-              alt="Placeholder preview of starter"
-              width={300}
-              height={200}
-            />
-            <div className={styles.cardText}>
-              <h2 className={styles.gradientText2}>Dashboard ➜</h2>
-              <p>
-                Deploy, configure, and manage your smart contracts from the
-                dashboard.
-              </p>
-            </div>
-          </a>
+          // welcomeScreen={() => {
+          //   return (
+          //     <div className="h-60 w-auto mx-auto my-auto">
+          //       <MediaRenderer
+          //         // IPFS image
+          //         src={"https://ipfs.io/ipfs/QmYSiTDEwo4W5yAjrDDGkcArk6QRQrtPiHWLkxrQ4oSVXU?filename=treasure.svg"}
+          //         height="100%"
+          //         width="auto"
+          //       />
+          //     </div>
+          //   )
+          // }}
 
-          <a
-            href="https://thirdweb.com/templates"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/templates-preview.png"
-              alt="Placeholder preview of templates"
-              width={300}
-              height={200}
-            />
-            <div className={styles.cardText}>
-              <h2 className={styles.gradientText3}>Templates ➜</h2>
-              <p>
-                Discover and clone template projects showcasing thirdweb
-                features.
-              </p>
-            </div>
-          </a>
-        </div>
+          welcomeScreen={() => {
+            return (
+              <div className="
+              flex flex-col items-center justify-center p-5
+            ">
+                <h2 className="text-2xl font-bold py-8">Jacket NFT</h2>
+                <MediaRenderer
+                  src={"https://ipfs.io/ipfs/QmYSiTDEwo4W5yAjrDDGkcArk6QRQrtPiHWLkxrQ4oSVXU?filename=treasure.svg"}
+                />
+                <p className="text-lg py-4">Connect your wallet to claim!</p>
+                <h3>Only <span className="text-2xl font-bold py-8">{claimCondition?.availableSupply ? claimCondition?.availableSupply : 0}</span> left!</h3>
+              </div>
+            )
+          }}
+
+        />
       </div>
     </main>
   );

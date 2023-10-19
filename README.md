@@ -1,40 +1,162 @@
-## Getting Started
+# Thirdweb's Custom Connect Wallet Button
 
-Create a project using this example:
+This repo is a practice of the titorial from https://youtu.be/lpBdrkjR2eQ, showing how to implement a custom wallet button with Thirdweb in Next,js app.
 
-```bash
-npx thirdweb create --template next-typescript-starter
+# Get Started
+
+### Create a Next.js app using TypeScript
+
+```cmd
+npx thirdweb create app
 ```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Set the Active Chain
 
-On `pages/_app.tsx`, you'll find our `ThirdwebProvider` wrapping your app, this is necessary for our [hooks](https://portal.thirdweb.com/react) and
-[UI Components](https://portal.thirdweb.com/ui-components) to work.
+```
+// pages/_app.tsx
 
-## Environment Variables
-
-To run this project, you will need to add environment variables. Check the `.env.example` file for all the environment variables required and add it to `.env.local` file or set them up on your hosting provider.
-
-## Deploy to IPFS
-
-Deploy a copy of your application to IPFS using the following command:
-
-```bash
-yarn deploy
+const activeChain = "mumbai";
 ```
 
-## Learn More
+### Add a client ID
 
-To learn more about thirdweb and Next.js, take a look at the following resources:
+```
+// pages/.env
 
-- [thirdweb React Documentation](https://docs.thirdweb.com/react) - learn about our React SDK.
-- [thirdweb TypeScript Documentation](https://docs.thirdweb.com/typescript) - learn about our JavaScript/TypeScript SDK.
-- [thirdweb Portal](https://docs.thirdweb.com) - check our guides and development resources.
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Templates](https://thirdweb.com/templates)
+NEXT_PUBLIC_TEMPLATE_CLIENT_ID=<FIND_IT_ON_THIRDWEB_API>
+```
 
-You can check out [the thirdweb GitHub organization](https://github.com/thirdweb-dev) - your feedback and contributions are welcome!
+### Install Tailwind CSS
 
-## Join our Discord!
+see [the docs](https://tailwindcss.com/docs/guides/nextjs).
 
-For any questions, suggestions, join our discord at [https://discord.gg/thirdweb](https://discord.gg/thirdweb).
+### Add a button: `<ConnectWallet />`
+
+```
+// pages/index.tsx
+
+import { ConnectWallet } from "@thirdweb-dev/react";
+import { NextPage } from "next";
+
+const Home: NextPage = () => {
+  return (
+    <main className="bg-zinc-900 h-screen flex justify-center items-center" >
+      <div >
+        <ConnectWallet />
+      </div>
+    </main>
+  );
+};
+
+export default Home;
+
+```
+
+# Customize the button
+
+Customize it on [Thirdweb's UI](https://thirdweb.com/dashboard/wallets/connect) and copy & paste the code, or hardcode it
+
+## Button
+
+In `page/index.tsx` under `<ConnectWallet />`:
+
+- Button title: `btnTitle`
+- css style: `className` (not supports tailwind css here)
+
+## Modal
+
+### Theming
+
+In `page/index.tsx` under `<ConnectWallet />`:
+
+```
+theme={
+    darkTheme({
+    fontFamily: "Futura",
+    colors: {
+      modalBg: "#FFFFFF",
+      primaryText: "#333333",
+      walletSelectorButtonHoverBg: "#EEEEEE",
+      separatorLine: "#EEEEEE",
+      borderColor: "#EEEEEE"
+    }
+  })
+}
+```
+
+### Custom Wallet
+
+In `page/_app.tsx`:
+
+- recommended
+- name
+- icon
+- supportedWallets
+
+### Title
+
+customize the left side of the modal window
+
+In `page/index.tsx` under `<ConnectWallet />`:
+
+- `modalTitle`
+- `modalTitleIconUrl`: can be empty
+
+### Welcome screen
+
+customize the right side of the modal window
+
+In `page/index.tsx` under `<ConnectWallet />`:
+
+- Use Thirdweb UI, or hardcode
+
+```
+welcomeScreen={{
+            title: "Connect Wallet to claim NFT.",
+            subtitle: "Claim your NFT now!",
+            img: {
+              src: "/white-t-shirt.jpg",
+              height: 150,
+              width: 150
+            }
+          }}
+```
+
+- Render a component
+
+```
+welcomeScreen={() => {
+            return (
+              <div className="h-60 w-auto mx-auto my-auto">
+                <MediaRenderer
+                  // IPFS image
+                  src={"https://ipfs.io/ipfs/QmYSiTDEwo4W5yAjrDDGkcArk6QRQrtPiHWLkxrQ4oSVXU?filename=treasure.svg"}
+                  height="100%"
+                  width="auto"
+                />
+              </div>
+            )
+          }}
+```
+
+- Pull infomation from an existing contract
+  - `useContract()`
+  - `useActiveClaimCondition()`
+  - Render a component
+
+```
+welcomeScreen={() => {
+            return (
+              <div className="
+              flex flex-col items-center justify-center p-5
+            ">
+                <h2>Jacket NFT</h2>
+                <MediaRenderer
+                  src={"https://ipfs.io/ipfs/QmYSiTDEwo4W5yAjrDDGkcArk6QRQrtPiHWLkxrQ4oSVXU?filename=treasure.svg"}
+                />
+                <p>Connect your wallet to claim!</p>
+                <h3>Only <span className="font-bold">{claimCondition?.availableSupply}</span> left!</h3>
+              </div>
+            )
+          }}
+```
