@@ -1,6 +1,6 @@
 # Thirdweb's Custom Connect Wallet Button
 
-This repo is a practice of the titorial from https://youtu.be/lpBdrkjR2eQ, showing how to implement a custom wallet button with Thirdweb in Next,js app.
+This repo is a practice of the tutorial from https://youtu.be/lpBdrkjR2eQ, showing how to implement a custom wallet button with Thirdweb in Next,js app.
 
 # Get Started
 
